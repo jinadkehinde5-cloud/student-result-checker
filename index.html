@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Result Checker</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #edf2f7;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 450px;
+  margin: 25px auto;
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px #ccc;
+}
+h1 {
+  color: #14532d;
+  text-align: center;
+}
+input, button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 7px;
+  font-size: 16px;
+}
+input {
+  border: 1px solid #bbb;
+}
+button {
+  background: #15803d;
+  color: white;
+  border: none;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 9px 5px;
+  text-align: left;
+}
+th {
+  background: #dcfce7;
+}
+#result {
+  margin-top: 15px;
+}
+.note {
+  color: #666;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🎓 Result Checker</h1>
+  <p>Enter the sample student details below.</p>
+
+  <input id="studentName" placeholder="Student name">
+  <input id="regNumber" placeholder="Registration number">
+
+  <button onclick="checkResult()">Check Result</button>
+
+  <div id="result"></div>
+  <p class="note">Practice project using sample data only.</p>
+</div>
+
+<script>
+const students = [
+  {
+    name: "Adebayo John",
+    reg: "STU001",
+    subjects: [
+      { name: "Mathematics", score: 78 },
+      { name: "English", score: 65 },
+      { name: "Computer", score: 88 },
+      { name: "Physics", score: 72 },
+      { name: "Electronics", score: 81 }
+    ]
+  },
+  {
+    name: "Mary James",
+    reg: "STU002",
+    subjects: [
+      { name: "Mathematics", score: 55 },
+      { name: "English", score: 69 },
+      { name: "Computer", score: 74 },
+      { name: "Physics", score: 48 },
+      { name: "Electronics", score: 63 }
+    ]
+  }
+];
+
+function checkResult() {
+  const name = document.getElementById("studentName")
+    .value.trim().toLowerCase();
+  const reg = document.getElementById("regNumber")
+    .value.trim().toUpperCase();
+  const output = document.getElementById("result");
+
+  if (!name || !reg) {
+    output.innerHTML = "<p>Please enter both details.</p>";
+    return;
+  }
+
+  const student = students.find(s =>
+    s.name.toLowerCase() === name && s.reg === reg
+  );
+
+  if (!student) {
+    output.innerHTML =
+      "<p>Student not found. Check the details and try again.</p>";
+    return;
+  }
+
+  let total = 0;
+  let rows = "";
+
+  student.subjects.forEach(subject => {
+    total += subject.score;
+    let grade = subject.score >= 70 ? "A" :
+                subject.score >= 60 ? "B" :
+                subject.score >= 50 ? "C" :
+                subject.score >= 45 ? "D" : "F";
+
+    rows += "<tr><td>" + subject.name +
+      "</td><td>" + subject.score +
+      "</td><td>" + grade + "</td></tr>";
+  });
+
+  const average = total / student.subjects.length;
+  const status = student.subjects.every(s => s.score >= 45)
+    ? "PASS" : "FAIL";
+
+  output.innerHTML =
+    "<h3>Result for " + student.name + "</h3>" +
+    "<p>Registration number: " + student.reg + "</p>" +
+    "<table><tr><th>Subject</th><th>Score</th><th>Grade</th></tr>" +
+    rows + "</table>" +
+    "<p><b>Total:</b> " + total + " / " +
+    (student.subjects.length * 100) + "</p>" +
+    "<p><b>Average:</b> " + average.toFixed(1) + "%</p>" +
+    "<h3>Result: " + status + "</h3>";
+}
+</script>
+</body>
+</html>
